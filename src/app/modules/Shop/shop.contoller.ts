@@ -41,7 +41,8 @@ const getById = catchAsync(async (req, res) => {
 
 const softDelete = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await ShopService.softDelete(id as string);
+  const user = (req as any).user;
+  const result = await ShopService.softDelete(user, id as string);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

@@ -16,6 +16,7 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "@prisma/client": "^6.0.0",
     "@types/express": "^5.0.0",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",

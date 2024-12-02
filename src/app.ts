@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import router from "./app/routes";
 
 const app: Application = express();
 
@@ -15,5 +16,8 @@ app.get("/", (req: Request, res: Response) => {
     message: "l2-a9-server...",
   });
 });
+
+app.use('/api/v1', router)
+
 
 export default app;

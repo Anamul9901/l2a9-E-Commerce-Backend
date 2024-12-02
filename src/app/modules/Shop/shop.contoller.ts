@@ -39,8 +39,34 @@ const getById = catchAsync(async (req, res) => {
   });
 });
 
+const softDelete = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await ShopService.softDelete(id as string);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Shop deleted successfully",
+    data: null,
+  });
+});
+
+const deleteShop = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await ShopService.deleteShop(id as string);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Shop deleted successfully",
+    data: result,
+  });
+});
+
 export const ShopController = {
   createShop,
   getAllShop,
-  getById
+  getById,
+  softDelete,
+  deleteShop,
 };

@@ -12,4 +12,8 @@ router.get("/", ShopController.getAllShop);
 
 router.get("/:id", ShopController.getById);
 
+router.delete("/soft/:id", ShopController.softDelete);
+
+router.delete("/:id", ShopController.deleteShop);
+
 export const ShopRoutes = router;

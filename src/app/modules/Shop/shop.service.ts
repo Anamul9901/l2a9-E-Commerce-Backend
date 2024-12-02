@@ -42,11 +42,34 @@ const getById = async (id: string) => {
     },
   });
 
-  return result
+  return result;
+};
+
+const softDelete = async (id: string) => {
+  const result = await prisma.shop.update({
+    where: {
+      id,
+    },
+    data: {
+      isDeleted: true,
+    },
+  });
+  return result;
+};
+
+const deleteShop = async (id: string) => {
+  const result = await prisma.shop.delete({
+    where: {
+      id,
+    },
+  });
+  return result;
 };
 
 export const ShopService = {
   createShop,
   getAllShop,
   getById,
+  softDelete,
+  deleteShop
 };

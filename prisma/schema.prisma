@@ -25,6 +25,51 @@ model User {
   profilePhoto  String?
   cretedAt      DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+  product       Product[]
+  shop          Shop?
+
+  @@map("users")
+}
+
+model Product {
+  id             String  @id @default(uuid())
+  name           String
+  title          String?
+  price          Int
+  category       String
+  inventoryCount Int
+  images         String?
+  discounts      Int?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  shopId String
+  shop   Shop   @relation(fields: [shopId], references: [id])
+
+  isDeleted Boolean  @default(false)
+  cretedAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("products")
+}
+
+model Shop {
+  id    String @id @default(uuid())
+  name  String
+  title String
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  logo      String?
+  followers Int       @default(0)
+  isDeleted Boolean   @default(false)
+  cretedAt  DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  product   Product[]
+
+  @@map("shops")
 }
 
 enum UserRole {

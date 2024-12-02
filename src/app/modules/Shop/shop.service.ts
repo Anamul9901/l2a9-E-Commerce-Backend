@@ -2,7 +2,6 @@ import { UserRole, UserStatus } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 
 const createShop = async (user: any, payload: any) => {
-    console.log(user)
   const vendorData = await prisma.user.findUniqueOrThrow({
     where: {
       email: user.email,
@@ -17,6 +16,37 @@ const createShop = async (user: any, payload: any) => {
   return result;
 };
 
+const getAllShop = async () => {
+  const result = await prisma.shop.findMany({
+    where: {
+      isDeleted: false,
+    },
+    //    select: {
+    //     id: true,
+    //     name: true,
+    //     title: true,
+    //     userId: true,
+    //     logo: true,
+    //     followers: true,
+    //    }
+  });
+
+  return result;
+};
+
+const getById = async (id: string) => {
+  const result = await prisma.shop.findUniqueOrThrow({
+    where: {
+      id,
+      isDeleted: false,
+    },
+  });
+
+  return result
+};
+
 export const ShopService = {
   createShop,
+  getAllShop,
+  getById,
 };

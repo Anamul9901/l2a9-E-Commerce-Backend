@@ -45,20 +45,22 @@ const getById = async (id: string) => {
 };
 
 const softDelete = async (user: any, id: string) => {
-    console.log(user, id)
+  console.log(user, id);
   const vendorData = await prisma.user.findUniqueOrThrow({
     where: {
       email: user.email,
-      status: UserStatus.active
+      status: UserStatus.active,
     },
   });
 
-  await prisma.product.findUniqueOrThrow({
-    where: {
-      id,
-      userId: vendorData.id,
-    },
-  });
+  if (user && user.role != "admin") {
+    await prisma.product.findUniqueOrThrow({
+      where: {
+        id,
+        userId: vendorData.id,
+      },
+    });
+  }
 
   const result = await prisma.product.update({
     where: {

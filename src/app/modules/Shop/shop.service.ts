@@ -53,12 +53,14 @@ const softDelete = async (user: any, id: string) => {
     },
   });
 
+if(user && user.role != 'admin'){
   await prisma.shop.findUniqueOrThrow({
     where: {
       id,
       userId: vendorData.id,
     },
   });
+}
 
   const result = await prisma.shop.update({
     where: {

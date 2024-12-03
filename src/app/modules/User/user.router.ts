@@ -8,5 +8,11 @@ const router = express.Router();
 router.post("/", UserController.createUser);
 
 router.post("/create-admin", auth(UserRole.admin), UserController.createAdmin);
+router.get("/", auth(UserRole.admin), UserController.getAllUsers);
+router.get(
+  "/me",
+  auth(UserRole.vendor, UserRole.admin, UserRole.customer),
+  UserController.getSingleUser
+);
 
 export const UserRouter = router;

@@ -26,8 +26,34 @@ const createAdmin = catchAsync(async (req, res) => {
   });
 });
 
+const getAllUsers = catchAsync(async (req, res) => {
+  const result = await UserService.getAllUsers();
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Users fetch successfully",
+    data: result,
+  });
+});
+
+const getSingleUser = catchAsync(async (req, res) => {
+  const {id} = req.params;
+  const user = (req as any).user;
+  const result = await UserService.getSingleUser(user);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "admin create successfully",
+    data: result,
+  });
+});
+
 
 export const UserController = {
     createUser,
-    createAdmin
+    createAdmin,
+    getAllUsers,
+    getSingleUser,
 }

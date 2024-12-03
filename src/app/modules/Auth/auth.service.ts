@@ -30,15 +30,20 @@ const loginUser = async (payload: { email: string; password: string }) => {
     configs.jwt.expires_in as string
   );
 
-  const refreshToken = jwtHelpers.generateToken(
-    { email: userData.email, role: userData.role },
-    configs.jwt.refresh_token_secret as Secret,
-    configs.jwt.refresh_token_expires_in as string
-  );
+  const data = {
+    id: userData.id,
+    name: userData.name,
+    email: userData.email,
+    contactNumber: userData.contactNumber,
+    address: userData.address,
+    role: userData.role,
+    status: userData.status,
+    profilePhoto: userData.profilePhoto,
+  }
 
   return {
+    data,
     accessToken,
-    refreshToken,
   };
 };
 
@@ -100,12 +105,12 @@ const changePassword = async (user: any, payload: any) => {
   });
 
   return {
-    message: "Password changed successfully!"
-  }
+    message: "Password changed successfully!",
+  };
 };
 
 export const AuthService = {
   loginUser,
   refreshToken,
-  changePassword
+  changePassword,
 };

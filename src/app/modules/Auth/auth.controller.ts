@@ -7,7 +7,6 @@ import { StatusCodes } from "http-status-codes";
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.loginUser(req.body);
 
-  const { refreshToken } = result;
 
   res.cookie("refreshToken", refreshToken, {
     secure: false, // must true in production
@@ -18,9 +17,7 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: "Logged in successfully",
-    data: {
-      accessToken: result.accessToken,
-    },
+    data: result
   });
 });
 

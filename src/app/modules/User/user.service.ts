@@ -1,6 +1,9 @@
 import { UserStatus } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import bcrypt from "bcrypt";
+import { jwtHelpers } from "../../../helpars/jwtHelpers";
+import { Secret } from "jsonwebtoken";
+import configs from "../../../configs";
 
 const createUser = async (payload: any) => {
   const hashedPassord: string = await bcrypt.hash(payload.password, 12);
@@ -13,7 +16,19 @@ const createUser = async (payload: any) => {
   const result = await prisma.user.create({
     data: payload,
   });
-  return result;
+
+  const accessToken = jwtHelpers.generateToken(
+    { email: payload.email, role: payload.role },
+    configs.jwt.jwt_secret as Secret,
+    configs.jwt.expires_in as string
+  );
+
+  const refreshToken = jwtHelpers.generateToken(
+    { email: payload.email, role: payload.role },
+    configs.jwt.refresh_token_secret as Secret,
+    configs.jwt.refresh_token_expires_in as string
+  );
+  return {result, accessToken, refreshToken};
 };
 
 const createAdmin = async (payload: any) => {

@@ -10,7 +10,7 @@ const createProduct = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: "admin create successfully",
+    message: "Product create successfully",
     data: result,
   });
 });
@@ -70,7 +70,36 @@ const deleteProduct = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: "Shop deleted successfully",
+    message: "Product deleted successfully",
+    data: result,
+  });
+});
+
+const updateProduct = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const user = (req as any).user;
+  const result = await ProductService.updateProduct(
+    id as string,
+    req.body as any,
+    user as any
+  );
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Product updated successfully",
+    data: result,
+  });
+});
+
+const getProductsByUserId = catchAsync(async (req, res) => {
+  const { shopId } = req.params;
+  const result = await ProductService.getProductsByUserId(shopId as string);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Product fetch successfully",
     data: result,
   });
 });
@@ -81,5 +110,7 @@ export const ProductController = {
   getById,
   softDelete,
   deleteProduct,
-  getMyProduct
+  getMyProduct,
+  updateProduct,
+  getProductsByUserId,
 };

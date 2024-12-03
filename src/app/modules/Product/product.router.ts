@@ -11,6 +11,8 @@ router.get("/", ProductController.getAllShop);
 
 router.get("/:id", ProductController.getById);
 
+router.get("/shop-product/:shopId", ProductController.getProductsByUserId);
+
 router.get("/vendor/myproduct", auth(UserRole.vendor), ProductController.getMyProduct);
 
 router.delete(
@@ -20,5 +22,8 @@ router.delete(
 );
 
 router.delete("/:id", auth(UserRole.admin), ProductController.deleteProduct);
+
+router.patch("/:id", auth(UserRole.vendor), ProductController.updateProduct);
+
 
 export const ProductRoutes = router;

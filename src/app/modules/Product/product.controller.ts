@@ -38,6 +38,18 @@ const getById = catchAsync(async (req, res) => {
   });
 });
 
+const getMyProduct = catchAsync(async (req, res) => {
+  const user = (req as any).user;
+  const result = await ProductService.getMyProduct(user);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Product retrieved successfully",
+    data: result,
+  });
+});
+
 const softDelete = catchAsync(async (req, res) => {
   const { id } = req.params;
   const user = (req as any).user;
@@ -69,4 +81,5 @@ export const ProductController = {
   getById,
   softDelete,
   deleteProduct,
+  getMyProduct
 };

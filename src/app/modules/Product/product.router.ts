@@ -11,6 +11,8 @@ router.get("/", ProductController.getAllShop);
 
 router.get("/:id", ProductController.getById);
 
+router.get("/vendor/myproduct", auth(UserRole.vendor), ProductController.getMyProduct);
+
 router.delete(
   "/soft/:id",
   auth(UserRole.vendor, UserRole.admin),

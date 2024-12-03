@@ -45,7 +45,7 @@ const getSingleUser = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: "admin create successfully",
+    message: "user fetch successfully",
     data: result,
   });
 });

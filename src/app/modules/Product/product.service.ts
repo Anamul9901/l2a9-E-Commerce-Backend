@@ -33,6 +33,23 @@ const getAllProduct = async () => {
   return result;
 };
 
+const getMyProduct = async(user: any)=>{
+  const vendorData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user.email,
+      status: UserStatus.active,
+    }
+  })
+const result = await prisma.product.findMany({
+  where: {
+    userId: vendorData.id,
+    isDeleted: false,
+  },
+});
+
+return result;
+}
+
 const getById = async (id: string) => {
   const result = await prisma.product.findUniqueOrThrow({
     where: {
@@ -88,4 +105,5 @@ export const ProductService = {
   getById,
   softDelete,
   deleteProduct,
+  getMyProduct
 };

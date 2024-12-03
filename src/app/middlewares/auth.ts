@@ -21,7 +21,6 @@ const auth = (...roles: string[]) => {
         token,
         configs.jwt.jwt_secret as Secret
       );
-
       req.user = verifiedUser;
 
       if (roles.length && !roles.includes(verifiedUser.role)) {

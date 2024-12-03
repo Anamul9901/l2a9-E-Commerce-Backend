@@ -11,7 +11,7 @@ router.get("/", ProductController.getAllShop);
 
 router.get("/:id", ProductController.getById);
 
-router.get("/shop-product/:shopId", ProductController.getProductsByUserId);
+router.get("/shop-product/:shopId", ProductController.getProductsByShopId);
 
 router.get("/vendor/myproduct", auth(UserRole.vendor), ProductController.getMyProduct);
 

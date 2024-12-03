@@ -92,9 +92,9 @@ const updateProduct = catchAsync(async (req, res) => {
   });
 });
 
-const getProductsByUserId = catchAsync(async (req, res) => {
+const getProductsByShopId = catchAsync(async (req, res) => {
   const { shopId } = req.params;
-  const result = await ProductService.getProductsByUserId(shopId as string);
+  const result = await ProductService.getProductsByShopId(shopId as string);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -112,5 +112,5 @@ export const ProductController = {
   deleteProduct,
   getMyProduct,
   updateProduct,
-  getProductsByUserId,
+  getProductsByShopId,
 };

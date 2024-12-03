@@ -14,19 +14,20 @@ datasource db {
 }
 
 model User {
-  id            String     @id @default(uuid())
-  name          String
-  email         String     @unique
-  contactNumber String
-  address       String?
-  role          UserRole   @default(customer)
-  status        UserStatus @default(active)
-  password      String
-  profilePhoto  String?
-  cretedAt      DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  product       Product[]
-  shop          Shop?
+  id             String           @id @default(uuid())
+  name           String
+  email          String           @unique
+  contactNumber  String
+  address        String?
+  role           UserRole         @default(customer)
+  status         UserStatus       @default(active)
+  password       String
+  profilePhoto   String?
+  cretedAt       DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  product        Product[]
+  shop           Shop?
+  followUnfollow FollowUnfollow[]
 
   @@map("users")
 }
@@ -62,14 +63,25 @@ model Shop {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
-  logo      String?
-  followers Int       @default(0)
-  isDeleted Boolean   @default(false)
-  cretedAt  DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  product   Product[]
+  logo           String?
+  followers      Int              @default(0)
+  isDeleted      Boolean          @default(false)
+  cretedAt       DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  product        Product[]
+  followUnfollow FollowUnfollow[]
 
   @@map("shops")
+}
+
+model FollowUnfollow {
+  shopId String
+  shop   Shop   @relation(fields: [shopId], references: [id])
+
+  folowerEmail String
+  user         User   @relation(fields: [folowerEmail], references: [id])
+
+  @@id([shopId, folowerEmail])
 }
 
 enum UserRole {

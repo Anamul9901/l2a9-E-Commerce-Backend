@@ -133,7 +133,7 @@ const updateProduct = async (id: string, payload: any, user: any) => {
   return result;
 };
 
-const getProductsByUserId = async (shopId: string) => {
+const getProductsByShopId = async (shopId: string) => {
   await prisma.shop.findUniqueOrThrow({
     where: {
       id: shopId,
@@ -162,5 +162,5 @@ export const ProductService = {
   deleteProduct,
   getMyProduct,
   updateProduct,
-  getProductsByUserId,
+  getProductsByShopId,
 };

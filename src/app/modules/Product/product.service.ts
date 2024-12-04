@@ -113,7 +113,6 @@ const getById = async (id: string, userId: string) => {
     },
   });
 
-
   try {
     if (userId) {
       const existingRecord = await prisma.recentProductShow.findUnique({

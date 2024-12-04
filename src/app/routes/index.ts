@@ -5,6 +5,7 @@ import { ShopRoutes } from "../modules/Shop/shop.router";
 import { ProductRoutes } from "../modules/Product/product.router";
 import { FollowerRoutes } from "../modules/FollowUnfollow/follow.router";
 import { RecentProductRoutes } from "../modules/RecentProduct/recentPro.router";
+import { CartRouter } from "../modules/Cart/cart.router";
 
 const router = express.Router();
 
@@ -32,6 +33,10 @@ const moduleRoutes = [
   {
     path: "/recent-product-view",
     route: RecentProductRoutes,
+  },
+  {
+    path: "/cart",
+    route: CartRouter,
   },
 ];
 

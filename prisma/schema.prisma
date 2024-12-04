@@ -29,6 +29,7 @@ model User {
   shop              Shop?
   followUnfollow    FollowUnfollow[]
   recentProductShow RecentProductShow?
+  cart              Cart?
 
   @@map("users")
 }
@@ -49,9 +50,10 @@ model Product {
   shopId String
   shop   Shop   @relation(fields: [shopId], references: [id])
 
-  isDeleted Boolean  @default(false)
-  cretedAt  DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isDeleted Boolean    @default(false)
+  cretedAt  DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  cartItem  CartItem[]
 
   @@map("products")
 }
@@ -92,6 +94,24 @@ model RecentProductShow {
   productIds String[]
 
   @@map("recent_product_show")
+}
+
+model Cart {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  cartItem CartItem[]
+}
+
+model CartItem {
+  id        String  @id @default(uuid())
+  cartId    String
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  totalPrice Int
 }
 
 enum UserRole {

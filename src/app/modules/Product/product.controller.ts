@@ -40,8 +40,7 @@ const getById = catchAsync(async (req, res) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: "Product retrieved successfully",
-    // data: result,
-    data: null,
+    data: result,
   });
 });
 

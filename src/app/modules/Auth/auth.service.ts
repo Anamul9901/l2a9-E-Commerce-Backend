@@ -122,14 +122,14 @@ const forgotPassord = async (payload: { email: string }) => {
     {
       email: userData.email,
       role: userData.role,
+      id: userData.id,
     },
     configs.jwt.reset_pass_secret as Secret,
     configs.jwt.reset_pass_secret_expires_in as string
   );
 
   const resetPassLink =
-    configs.reset_pass_link +
-    `?userId=${userData.id}&token=${resetPasswordToken}`;
+    configs.reset_pass_link + `/${resetPasswordToken}`;
 
   await emailSender(
     userData.email,
@@ -148,25 +148,24 @@ const forgotPassord = async (payload: { email: string }) => {
 
     `
   );
-
-  console.log(resetPassLink);
 };
 
-const resetPassword = async (
-  token: string,
-  payload: { id: string; password: string }
-) => {
-  const userData = await prisma.user.findUniqueOrThrow({
-    where: {
-      id: payload.id,
-      status: UserStatus.active,
-    },
-  });
+const resetPassword = async (token: string, payload: { password: string }) => {
 
+  if (!token) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, "You are not authorized!");
+  }
   const isValidToken = jwtHelpers.verifyToken(
     token,
     configs.jwt.reset_pass_secret as Secret
   );
+
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: isValidToken.id,
+      status: UserStatus.active,
+    },
+  });
 
   if (!isValidToken || isValidToken.email !== userData.email) {
     throw new ApiError(StatusCodes.FORBIDDEN, "Forbidden");
@@ -189,5 +188,5 @@ export const AuthService = {
   refreshToken,
   changePassword,
   forgotPassord,
-  resetPassword
+  resetPassword,
 };

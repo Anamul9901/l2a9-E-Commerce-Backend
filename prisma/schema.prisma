@@ -101,6 +101,8 @@ model Cart {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
+  vendorId String
+
   cartItem CartItem[]
 }
 

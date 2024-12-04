@@ -41,6 +41,34 @@ const createCart = async (user: any, payload: any) => {
     },
   });
 
+  const vendorData = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: payload.vendorId,
+      status: UserStatus.active,
+    },
+  });
+
+  const cardData = await prisma.cart.findUniqueOrThrow({
+    where: {
+      userId: userData.id,
+    },
+  });
+
+  if (cardData.vendorId !== payload.vendorId) {
+    await prisma.cartItem.deleteMany({
+      where: {
+        cartId: cardData.id,
+      },
+    });
+    await prisma.cart.update({
+      where: {
+        userId: userData.id,
+      },
+      data: {
+        vendorId: payload.vendorId,
+      },
+    });
+  }
   // Upsert the cart
   const cart = await prisma.cart.upsert({
     where: {
@@ -49,6 +77,7 @@ const createCart = async (user: any, payload: any) => {
     update: {},
     create: {
       userId: userData.id,
+      vendorId: vendorData.id,
     },
   });
 
@@ -152,9 +181,15 @@ const deleteCartItem = async (cartItemId: string) => {
   return result;
 };
 
+const deleteAllCartAndItem = async () => {
+  await prisma.cartItem.deleteMany();
+  await prisma.cart.deleteMany();
+};
+
 export const CartService = {
   getSingleCart,
   createCart,
   deleteCartItem,
   reduceCartItemQuantity,
+  deleteAllCartAndItem,
 };

@@ -25,4 +25,7 @@ router.post(
 
 router.delete("/:id", CartController.deleteCartItem);
 
+router.delete("/", CartController.deleteAllCartAndItem);
+
+
 export const CartRouter = router;

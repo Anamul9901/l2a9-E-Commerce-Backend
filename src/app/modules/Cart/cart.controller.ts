@@ -55,9 +55,21 @@ const reduceCartItemQuantity = catchAsync(async (req, res) => {
   });
 });
 
+const deleteAllCartAndItem = catchAsync(async (req, res) => {
+  const result = await CartService.deleteAllCartAndItem();
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Delete all cart and item successfully",
+    data: result,
+  });
+});
+
 export const CartController = {
   getSingleCart,
   createCart,
   deleteCartItem,
   reduceCartItemQuantity,
+  deleteAllCartAndItem,
 };

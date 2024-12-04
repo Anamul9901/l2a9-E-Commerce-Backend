@@ -5,6 +5,12 @@ import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 
+router.get(
+  "/",
+  auth(UserRole.customer, UserRole.admin, UserRole.vendor),
+  CartController.getSingleCart
+);
+
 router.post(
   "/",
   auth(UserRole.customer, UserRole.admin, UserRole.vendor),

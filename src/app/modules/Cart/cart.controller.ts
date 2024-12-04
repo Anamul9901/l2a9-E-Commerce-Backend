@@ -4,6 +4,18 @@ import { ProductService } from "../Product/product.service";
 import sendResponse from "../../../shared/sendResponse";
 import { CartService } from "./cart.service";
 
+const getSingleCart = catchAsync(async (req, res) => {
+  const user = (req as any).user;
+  const result = await CartService.getSingleCart(user as any);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Cart fetch successfully",
+    data: result,
+  });
+});
+
 const createCart = catchAsync(async (req, res) => {
   const user = (req as any).user;
   const result = await CartService.createCart(user as any, req.body as any);
@@ -44,6 +56,7 @@ const reduceCartItemQuantity = catchAsync(async (req, res) => {
 });
 
 export const CartController = {
+  getSingleCart,
   createCart,
   deleteCartItem,
   reduceCartItemQuantity,

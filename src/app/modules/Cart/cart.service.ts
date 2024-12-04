@@ -1,6 +1,34 @@
 import { UserStatus } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 
+const getSingleCart = async (user: any) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user.email,
+      status: UserStatus.active,
+    },
+  });
+  const result = await prisma.cart.findUnique({
+    where: {
+      userId: userData.id,
+    },
+    include: {
+      cartItem: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+
+  const totalSum = result?.cartItem.reduce(
+    (sum, item) => sum + item.totalPrice,
+    0
+  );
+
+  return { totalSum, data: result };
+};
+
 const createCart = async (user: any, payload: any) => {
   // Fetch the active user
   const userData = await prisma.user.findUniqueOrThrow({
@@ -108,7 +136,7 @@ const reduceCartItemQuantity = async (user: any, payload: any) => {
         totalPrice: existingCartItem.totalPrice - totalPrice,
       },
     });
-  } 
+  }
   return cartItem;
 };
 
@@ -122,7 +150,8 @@ const deleteCartItem = async (cartItemId: string) => {
 };
 
 export const CartService = {
+  getSingleCart,
   createCart,
   deleteCartItem,
-  reduceCartItemQuantity
+  reduceCartItemQuantity,
 };

@@ -1,4 +1,4 @@
-import { UserStatus } from "@prisma/client";
+import { UserRole, UserStatus } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import bcrypt from "bcrypt";
 import ApiError from "../../errors/ApiError";
@@ -6,6 +6,7 @@ import { StatusCodes } from "http-status-codes";
 import { jwtHelpers } from "../../../helpars/jwtHelpers";
 import configs from "../../../configs";
 import { Secret } from "jsonwebtoken";
+import emailSender from "./emailSender";
 
 const loginUser = async (payload: { email: string; password: string }) => {
   const userData = await prisma.user.findUniqueOrThrow({
@@ -39,7 +40,7 @@ const loginUser = async (payload: { email: string; password: string }) => {
     role: userData.role,
     status: userData.status,
     profilePhoto: userData.profilePhoto,
-  }
+  };
 
   return {
     data,
@@ -109,8 +110,51 @@ const changePassword = async (user: any, payload: any) => {
   };
 };
 
+const forgotPassord = async (payload: { email: string }) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: payload.email,
+      status: UserStatus.active,
+    },
+  });
+
+  const resetPasswordToken = jwtHelpers.generateToken(
+    {
+      email: userData.email,
+      role: userData.role,
+    },
+    configs.jwt.reset_pass_secret as Secret,
+    configs.jwt.reset_pass_secret_expires_in as string
+  );
+
+  const resetPassLink =
+    configs.reset_pass_link +
+    `?userId=${userData.id}&token=${resetPasswordToken}`;
+
+  await emailSender(
+    userData.email,
+    `
+    <div>
+  <p>Dear User,</p>
+  <p>
+    Your password reset link 
+    <a href=${resetPassLink} style={{ textDecoration: "none" }}>
+      <button style={{ padding: "10px 20px", backgroundColor: "#007bff", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer" }}>
+        Reset Password
+      </button>
+    </a>
+  </p>
+</div>
+
+    `
+  );
+
+  console.log(resetPassLink)
+};
+
 export const AuthService = {
   loginUser,
   refreshToken,
   changePassword,
+  forgotPassord,
 };

@@ -2,6 +2,8 @@ import { StatusCodes } from "http-status-codes";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import { ProductService } from "./product.service";
+import pick from "../../../shared/pick";
+import { productFilterableFields } from "./product.constant";
 
 const createProduct = catchAsync(async (req, res) => {
   const user = (req as any).user;
@@ -15,8 +17,11 @@ const createProduct = catchAsync(async (req, res) => {
   });
 });
 
-const getAllShop = catchAsync(async (req, res) => {
-  const result = await ProductService.getAllProduct();
+const getAllProduct = catchAsync(async (req, res) => {
+  const filters = pick(req.query, productFilterableFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const result = await ProductService.getAllProduct(filters, options);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -106,7 +111,7 @@ const getProductsByShopId = catchAsync(async (req, res) => {
 
 export const ProductController = {
   createProduct,
-  getAllShop,
+  getAllProduct,
   getById,
   softDelete,
   deleteProduct,

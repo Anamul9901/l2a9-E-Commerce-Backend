@@ -1,5 +1,7 @@
-import { UserStatus } from "@prisma/client";
+import { Prisma, UserStatus } from "@prisma/client";
 import prisma from "../../../shared/prisma";
+import { paginationHelper } from "../../../helpars/paginationHelper";
+import { productSearchAbleFields } from "./product.constant";
 
 const createProduct = async (user: any, payload: any) => {
   const vendorData = await prisma.user.findUniqueOrThrow({
@@ -23,14 +25,58 @@ const createProduct = async (user: any, payload: any) => {
   return result;
 };
 
-const getAllProduct = async () => {
+const getAllProduct = async (params: any, options: any) => {
+  const { searchTerm, ...filterData } = params;
+  //   console.log(filterData); //* aikhane upore destracture korar karone, searchTerm bade onno gulu show korbe
+  const { limit, page, skip, sortBy, sortOrder } =
+    paginationHelper.calculatePaginatin(options);
+  // console.log({ limit, page, sortBy, sortOrder });
+
+  const andConditions: Prisma.ProductWhereInput[] = [];
+
+  if (params.searchTerm) {
+    andConditions.push({
+      OR: productSearchAbleFields.map((field) => ({
+        [field]: {
+          contains: params?.searchTerm,
+          mode: "insensitive",
+        },
+      })),
+    });
+  }
+
+  //   console.log(Object.keys(filterData)); // aikhane key gulu array akare debe
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+
+  andConditions.push({
+    isDeleted: false,
+  });
+
+  //   console.dir(andConditions, {depth: 'indinity'})
+
+  const whereContitions: Prisma.ProductWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+  //   console.log({whereContitions})
   const result = await prisma.product.findMany({
-    where: {
-      isDeleted: false,
-    },
-    orderBy: {
-      cretedAt: "desc",
-    },
+    where: whereContitions,
+    skip,
+    take: limit,
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : {
+            cretedAt: "desc",
+          },
   });
 
   return result;

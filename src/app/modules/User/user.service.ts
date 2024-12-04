@@ -60,6 +60,7 @@ const getAllUsers = async () => {
 };
 
 const getSingleUser = async (user: any) => {
+  
   const result = await prisma.user.findUniqueOrThrow({
     where: {
       email: user.email,

@@ -25,7 +25,12 @@ router.post(
 
 router.delete("/:id", CartController.deleteCartItem);
 
-router.delete("/", CartController.deleteAllCartAndItem);
+router.get(
+  "/check-same-vendor",
+  auth(UserRole.customer, UserRole.admin, UserRole.vendor),
+  CartController.checkSameVendorProduct
+);
 
+router.delete("/", CartController.deleteAllCartAndItem);
 
 export const CartRouter = router;

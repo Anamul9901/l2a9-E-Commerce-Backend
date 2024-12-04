@@ -55,6 +55,20 @@ const reduceCartItemQuantity = catchAsync(async (req, res) => {
   });
 });
 
+const checkSameVendorProduct = catchAsync(async (req, res) => {
+  const user = (req as any).user;
+  const result = await CartService.checkSameVendorProduct(
+    user as any
+  );
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "check same vendor product or not",
+    data: result,
+  });
+});
+
 const deleteAllCartAndItem = catchAsync(async (req, res) => {
   const result = await CartService.deleteAllCartAndItem();
 
@@ -72,4 +86,5 @@ export const CartController = {
   deleteCartItem,
   reduceCartItemQuantity,
   deleteAllCartAndItem,
+  checkSameVendorProduct,
 };

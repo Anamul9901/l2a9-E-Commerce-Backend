@@ -117,6 +117,18 @@ model CartItem {
   cretedAt   DateTime @default(now())
 }
 
+model Order {
+  id            String   @id @default(uuid())
+  user          Json
+  totalPrice    Int
+  status        String   @default("pending")
+  paymentStatus String   @default("pending")
+  transactionId String   @unique @default(uuid())
+  productInfo   Json
+  cretedAt      DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 enum UserRole {
   customer
   vendor

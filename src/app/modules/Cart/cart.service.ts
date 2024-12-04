@@ -48,27 +48,6 @@ const createCart = async (user: any, payload: any) => {
     },
   });
 
-  const cardData = await prisma.cart.findUniqueOrThrow({
-    where: {
-      userId: userData.id,
-    },
-  });
-
-  if (cardData.vendorId !== payload.vendorId) {
-    await prisma.cartItem.deleteMany({
-      where: {
-        cartId: cardData.id,
-      },
-    });
-    await prisma.cart.update({
-      where: {
-        userId: userData.id,
-      },
-      data: {
-        vendorId: payload.vendorId,
-      },
-    });
-  }
   // Upsert the cart
   const cart = await prisma.cart.upsert({
     where: {
@@ -80,6 +59,28 @@ const createCart = async (user: any, payload: any) => {
       vendorId: vendorData.id,
     },
   });
+
+  // const cardData = await prisma.cart.findUniqueOrThrow({
+  //   where: {
+  //     userId: userData.id,
+  //   },
+  // });
+
+  if (cart.vendorId !== payload.vendorId) {
+    await prisma.cartItem.deleteMany({
+      where: {
+        cartId: cart.id,
+      },
+    });
+    await prisma.cart.update({
+      where: {
+        userId: userData.id,
+      },
+      data: {
+        vendorId: payload.vendorId,
+      },
+    });
+  }
 
   // Fetch the product details
   const productData = await prisma.product.findUniqueOrThrow({
@@ -181,6 +182,23 @@ const deleteCartItem = async (cartItemId: string) => {
   return result;
 };
 
+const checkSameVendorProduct = async (user: any) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user.email,
+    },
+  });
+
+  const checkSameVendorProduct = await prisma.cart.findUnique({
+    where: {
+      userId: userData.id,
+    },
+  });
+
+  return checkSameVendorProduct
+
+};
+
 const deleteAllCartAndItem = async () => {
   await prisma.cartItem.deleteMany();
   await prisma.cart.deleteMany();
@@ -192,4 +210,5 @@ export const CartService = {
   deleteCartItem,
   reduceCartItemQuantity,
   deleteAllCartAndItem,
+  checkSameVendorProduct,
 };

@@ -13,4 +13,16 @@ router.post(
 
 router.get("/", auth(UserRole.admin), OrderController.getAllOrder);
 
+router.get(
+  "/for-customer",
+  auth(UserRole.admin, UserRole.customer, UserRole.vendor),
+  OrderController.getOrderForCustomer
+);
+
+router.get(
+  "/for-vendor/:id",
+  auth(UserRole.vendor),
+  OrderController.getOrderForVendor
+);
+
 export const OrderRouter = router;

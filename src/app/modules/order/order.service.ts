@@ -38,7 +38,6 @@ const createOrder = async (user: any, orderData: any) => {
     },
   });
 
-
   const paymentData = {
     transactionId: createOrder.transactionId,
     totalPrice: createOrder.totalPrice,
@@ -54,12 +53,37 @@ const createOrder = async (user: any, orderData: any) => {
   return paymentSession;
 };
 
-const getAllOrder = async()=>{
+const getAllOrder = async () => {
   const result = await prisma.order.findMany();
   return result;
-}
+};
+
+const getOrderForCustomer = async (user: any) => {
+  const result = await prisma.order.findMany({
+    where: {
+      user: {
+        path: ["email"],
+        equals: user.email,
+      },
+    },
+  });
+
+  return result;
+};
+
+
+const getOrderForVendor = async (vendorId: string) => {
+  const orders = await prisma.order.findMany();
+  const result = orders.filter((order) => {
+    const productInfo = order.productInfo as any;
+    return productInfo.vendorId === vendorId;
+  });
+  return result;
+};
 
 export const OrderService = {
   createOrder,
-  getAllOrder
+  getAllOrder,
+  getOrderForCustomer,
+  getOrderForVendor,
 };

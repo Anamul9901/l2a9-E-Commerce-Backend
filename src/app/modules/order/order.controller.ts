@@ -26,7 +26,33 @@ const getAllOrder = catchAsync(async (req, res) => {
   });
 });
 
+const getOrderForCustomer = catchAsync(async (req, res) => {
+  const user = (req as any).user;
+  const result = await OrderService.getOrderForCustomer(user as any);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Order fetch successfully",
+    data: result,
+  });
+});
+
+const getOrderForVendor = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await OrderService.getOrderForVendor(id as string);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Order fetch successfully",
+    data: result,
+  });
+});
+
 export const OrderController = {
   createOrder,
-  getAllOrder
+  getAllOrder,
+  getOrderForCustomer,
+  getOrderForVendor,
 };

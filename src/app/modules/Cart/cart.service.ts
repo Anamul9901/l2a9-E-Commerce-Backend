@@ -17,6 +17,9 @@ const getSingleCart = async (user: any) => {
         include: {
           product: true,
         },
+        orderBy: {
+          cretedAt: "desc",
+        },
       },
     },
   });

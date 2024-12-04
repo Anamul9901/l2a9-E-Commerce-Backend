@@ -4,6 +4,7 @@ import { AuthRoutes } from "../modules/Auth/auth.routes";
 import { ShopRoutes } from "../modules/Shop/shop.router";
 import { ProductRoutes } from "../modules/Product/product.router";
 import { FollowerRoutes } from "../modules/FollowUnfollow/follow.router";
+import { RecentProductRoutes } from "../modules/RecentProduct/recentPro.router";
 
 const router = express.Router();
 
@@ -27,6 +28,10 @@ const moduleRoutes = [
   {
     path: "/",
     route: FollowerRoutes,
+  },
+  {
+    path: "/recent-product-view",
+    route: RecentProductRoutes,
   },
 ];
 

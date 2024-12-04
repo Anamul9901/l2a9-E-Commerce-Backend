@@ -14,20 +14,21 @@ datasource db {
 }
 
 model User {
-  id             String           @id @default(uuid())
-  name           String
-  email          String           @unique
-  contactNumber  String?
-  address        String?
-  role           UserRole         @default(customer)
-  status         UserStatus       @default(active)
-  password       String
-  profilePhoto   String?
-  cretedAt       DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  product        Product[]
-  shop           Shop?
-  followUnfollow FollowUnfollow[]
+  id                String             @id @default(uuid())
+  name              String
+  email             String             @unique
+  contactNumber     String?
+  address           String?
+  role              UserRole           @default(customer)
+  status            UserStatus         @default(active)
+  password          String
+  profilePhoto      String?
+  cretedAt          DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  product           Product[]
+  shop              Shop?
+  followUnfollow    FollowUnfollow[]
+  recentProductShow RecentProductShow?
 
   @@map("users")
 }
@@ -82,6 +83,15 @@ model FollowUnfollow {
   user         User   @relation(fields: [folowerEmail], references: [id])
 
   @@id([shopId, folowerEmail])
+}
+
+model RecentProductShow {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id])
+  productIds String[]
+
+  @@map("recent_product_show")
 }
 
 enum UserRole {

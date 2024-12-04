@@ -33,7 +33,8 @@ const getAllProduct = catchAsync(async (req, res) => {
 
 const getById = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await ProductService.getById(id as string);
+  const userId = req.body.userId;
+  const result = await ProductService.getById(id as string, userId as string);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

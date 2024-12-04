@@ -102,7 +102,8 @@ const getMyProduct = async (user: any) => {
   return result;
 };
 
-const getById = async (id: string) => {
+const getById = async (id: string, userId: string) => {
+  console.log("userId", userId);
   const result = await prisma.product.findUniqueOrThrow({
     where: {
       id,
@@ -112,6 +113,35 @@ const getById = async (id: string) => {
       shop: true,
     },
   });
+
+  try {
+    if (userId) {
+      const existingRecord = await prisma.recentProductShow.findUnique({
+        where: { userId },
+      });
+
+      let updatedProductIds = existingRecord
+        ? existingRecord.productIds.filter((id) => id !== result.id)
+        : [];
+
+      updatedProductIds.push(result.id);
+
+      updatedProductIds = updatedProductIds.slice(-10);
+
+      await prisma.recentProductShow.upsert({
+        where: { userId },
+        update: {
+          productIds: updatedProductIds,
+        },
+        create: {
+          userId,
+          productIds: updatedProductIds,
+        },
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  }
 
   return result;
 };

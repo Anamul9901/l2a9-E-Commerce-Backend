@@ -11,7 +11,7 @@ const getByUserId = catchAsync(async (req, res) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: "Recent view products fetch successfully",
-    data: result,
+    data: result || [],
   });
 });
 

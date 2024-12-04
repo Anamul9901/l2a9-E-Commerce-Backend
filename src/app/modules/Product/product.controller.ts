@@ -33,14 +33,15 @@ const getAllProduct = catchAsync(async (req, res) => {
 
 const getById = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const userId = req.body.userId;
+  const { userId } = req.query;
   const result = await ProductService.getById(id as string, userId as string);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message: "Product retrieved successfully",
-    data: result,
+    // data: result,
+    data: null,
   });
 });
 

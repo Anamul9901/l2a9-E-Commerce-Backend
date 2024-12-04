@@ -1,10 +1,11 @@
+import { UserStatus } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 
 const getByUserId = async (userId: string) => {
-  
   await prisma.user.findUniqueOrThrow({
     where: {
       id: userId,
+      status: UserStatus.active,
     },
   });
 

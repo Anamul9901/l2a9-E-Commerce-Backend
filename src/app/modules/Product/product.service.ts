@@ -103,7 +103,6 @@ const getMyProduct = async (user: any) => {
 };
 
 const getById = async (id: string, userId: string) => {
-  console.log("userId", userId);
   const result = await prisma.product.findUniqueOrThrow({
     where: {
       id,
@@ -113,6 +112,7 @@ const getById = async (id: string, userId: string) => {
       shop: true,
     },
   });
+
 
   try {
     if (userId) {

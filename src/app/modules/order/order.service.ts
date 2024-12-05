@@ -2,7 +2,7 @@ import prisma from "../../../shared/prisma";
 import { initiatePayment } from "../payment/payment.utils";
 
 const createOrder = async (user: any, orderData: any) => {
-  const { totalPrice, facility, date, startTime, endTime } = orderData;
+  const { name, email, contactNumber, address } = orderData;
 
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
@@ -28,10 +28,10 @@ const createOrder = async (user: any, orderData: any) => {
   const createOrder = await prisma.order.create({
     data: {
       user: {
-        name: userData.name,
+        name: name || userData.name,
         email: userData.email,
-        contactNumber: userData?.contactNumber,
-        address: userData?.address,
+        contactNumber: contactNumber || userData?.contactNumber,
+        address: address || userData?.address,
       },
       totalPrice: totalSum,
       productInfo: cartInfo,
@@ -41,10 +41,10 @@ const createOrder = async (user: any, orderData: any) => {
   const paymentData = {
     transactionId: createOrder.transactionId,
     totalPrice: createOrder.totalPrice,
-    customerName: userData.name,
+    customerName: name || userData.name,
     customerEmail: userData.email,
-    customerPhone: userData?.contactNumber || "N/A",
-    customerAddress: userData?.address || "N/A",
+    customerPhone: contactNumber || userData?.contactNumber,
+    customerAddress: address || userData?.address,
   };
 
   //Payment
@@ -70,7 +70,6 @@ const getOrderForCustomer = async (user: any) => {
 
   return result;
 };
-
 
 const getOrderForVendor = async (vendorId: string) => {
   const orders = await prisma.order.findMany();

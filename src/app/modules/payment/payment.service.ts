@@ -8,14 +8,9 @@ const confirmationService = async (transactionId: string, status: string) => {
 
   let message = "";
 
+  let orderData: any;
   if (verifyResponse && verifyResponse.pay_status === "Successful") {
-    //   await orderModel.findOneAndUpdate(
-    //     { transactionId },
-    //     { paymentStatus: 'Paid' },
-    //     { new: true }
-    //   );
-
-    const orderData = await prisma.order.findUniqueOrThrow({
+    orderData = await prisma.order.findUniqueOrThrow({
       where: {
         transactionId,
       },
@@ -35,8 +30,17 @@ const confirmationService = async (transactionId: string, status: string) => {
     message = "Payment Failed!";
   }
 
+
+// delete all cart item
+  await prisma.cartItem.deleteMany({
+    where: {
+      userEmail: orderData?.user?.email,
+    },
+  });
+
+
+
   const filePath = join(__dirname, "../../../../src/public/index.html");
-  console.log("filepat", filePath);
   let template = readFileSync(filePath, "utf-8");
   template = template.replace("{{message}}", message);
   template = template.replace("{{message2}}", status);

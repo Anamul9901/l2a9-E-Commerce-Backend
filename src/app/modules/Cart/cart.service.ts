@@ -121,6 +121,7 @@ const createCart = async (user: any, payload: any) => {
         productId: payload.productId,
         quantity: payload.quantity,
         totalPrice,
+        userEmail: userData.email,
       },
     });
   }

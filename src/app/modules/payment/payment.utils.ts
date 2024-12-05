@@ -4,9 +4,6 @@ dotenv.config();
 
 export const initiatePayment = async (paymentData: any) => {
   try {
-    if (!process.env.PAYMENT_URL || !process.env.STORE_ID || !process.env.SIGNETURE_KEY) {
-      throw new Error("Required environment variables are missing.");
-    }
 
     const responst = await axios.post(process.env.PAYMENT_URL!, {
       store_id: process.env.STORE_ID,

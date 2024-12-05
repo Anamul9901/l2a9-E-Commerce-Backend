@@ -9,4 +9,6 @@ router.post("/", auth(UserRole.vendor), CouponController.createCoupon);
 
 router.get("/", auth(UserRole.vendor), CouponController.getVendorCoupon);
 
+router.delete("/:id", auth(UserRole.vendor), CouponController.deleteCoupon);
+
 export const CouponRouter = router;

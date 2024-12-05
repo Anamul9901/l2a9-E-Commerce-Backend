@@ -10,12 +10,7 @@ const confirmationService = catchAsync(async (req, res) => {
     status as string
   );
 
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: "Payment confirmation successfully",
-    data: result,
-  });
+  res.send(result);
 });
 
 export const PaymentController = {

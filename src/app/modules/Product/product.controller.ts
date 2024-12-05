@@ -46,7 +46,7 @@ const getById = catchAsync(async (req, res) => {
 
 const getMyProduct = catchAsync(async (req, res) => {
   const user = (req as any).user;
-  const result = await ProductService.getMyProduct(user);
+  const result = await ProductService.getMyProduct(user as any);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -100,7 +100,11 @@ const updateProduct = catchAsync(async (req, res) => {
 
 const getProductsByShopId = catchAsync(async (req, res) => {
   const { shopId } = req.params;
-  const result = await ProductService.getProductsByShopId(shopId as string);
+  const { limit } = req.query;
+  const result = await ProductService.getProductsByShopId(
+    shopId as string,
+    Number(limit)
+  );
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

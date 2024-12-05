@@ -208,7 +208,7 @@ const updateProduct = async (id: string, payload: any, user: any) => {
   return result;
 };
 
-const getProductsByShopId = async (shopId: string) => {
+const getProductsByShopId = async (shopId: string, limit: number) => {
   await prisma.shop.findUniqueOrThrow({
     where: {
       id: shopId,
@@ -221,6 +221,7 @@ const getProductsByShopId = async (shopId: string) => {
       shopId,
       isDeleted: false,
     },
+    take: limit || 10,
     orderBy: {
       cretedAt: "desc",
     },

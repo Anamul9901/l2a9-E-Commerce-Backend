@@ -39,8 +39,8 @@ const getOrderForCustomer = catchAsync(async (req, res) => {
 });
 
 const getOrderForVendor = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const result = await OrderService.getOrderForVendor(id as string);
+  const user = (req as any).user;
+  const result = await OrderService.getOrderForVendor(user as any);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,

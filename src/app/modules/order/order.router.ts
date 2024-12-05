@@ -20,7 +20,7 @@ router.get(
 );
 
 router.get(
-  "/for-vendor/:id",
+  "/for-vendor",
   auth(UserRole.vendor),
   OrderController.getOrderForVendor
 );

@@ -35,10 +35,8 @@ const createOrder = async (user: any, orderData: any) => {
   if (result) {
     const discountPercent = result?.discount;
     const previousPrice = totalSum;
-    totalSum =
-      previousPrice - (previousPrice * discountPercent) / 100;
+    totalSum = previousPrice - (previousPrice * discountPercent) / 100;
   }
-
 
   const createOrder = await prisma.order.create({
     data: {
@@ -86,11 +84,18 @@ const getOrderForCustomer = async (user: any) => {
   return result;
 };
 
-const getOrderForVendor = async (vendorId: string) => {
+const getOrderForVendor = async (user: any) => {
+  const vendorData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user.email,
+    },
+  });
+
+
   const orders = await prisma.order.findMany();
   const result = orders.filter((order) => {
     const productInfo = order.productInfo as any;
-    return productInfo.vendorId === vendorId;
+    return productInfo.vendorId === vendorData.id;
   });
   return result;
 };

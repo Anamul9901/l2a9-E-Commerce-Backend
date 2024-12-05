@@ -2,7 +2,7 @@ import prisma from "../../../shared/prisma";
 import { initiatePayment } from "../payment/payment.utils";
 
 const createOrder = async (user: any, orderData: any) => {
-  const { name, email, contactNumber, address } = orderData;
+  const { name, email, contactNumber, address, couponCode } = orderData;
 
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
@@ -20,10 +20,25 @@ const createOrder = async (user: any, orderData: any) => {
     },
   });
 
-  const totalSum = cartInfo?.cartItem.reduce(
+  const result = await prisma.coupon.findUnique({
+    where: {
+      couponCode,
+      vendorId: cartInfo.vendorId,
+    },
+  });
+
+  let totalSum = cartInfo?.cartItem.reduce(
     (sum, item) => sum + item.totalPrice,
     0
   );
+
+  if (result) {
+    const discountPercent = result?.discount;
+    const previousPrice = totalSum;
+    totalSum =
+      previousPrice - (previousPrice * discountPercent) / 100;
+  }
+
 
   const createOrder = await prisma.order.create({
     data: {

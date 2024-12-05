@@ -36,6 +36,16 @@ const getVendorCoupon = async (user: any) => {
   return result;
 };
 
+const getSingleCoupon = async (couponCode: string, payload: any) => {
+  const result = await prisma.coupon.findUniqueOrThrow({
+    where: {
+      couponCode,
+      vendorId: payload.vendorId,
+    },
+  });
+  return result;
+};
+
 const deleteCoupon = async (usre: any, id: string) => {
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
@@ -56,5 +66,6 @@ const deleteCoupon = async (usre: any, id: string) => {
 export const CouponService = {
   createCoupon,
   getVendorCoupon,
+  getSingleCoupon,
   deleteCoupon,
 };

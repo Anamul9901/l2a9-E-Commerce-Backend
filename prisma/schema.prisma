@@ -134,6 +134,13 @@ model Order {
   updatedAt     DateTime @updatedAt
 }
 
+model coupon {
+  id         String @id @default(uuid())
+  vendorId   String
+  couponCode String @unique
+  discount   Int
+}
+
 enum UserRole {
   customer
   vendor

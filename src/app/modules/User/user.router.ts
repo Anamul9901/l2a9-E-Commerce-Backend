@@ -16,4 +16,13 @@ router.get(
 );
 
 router.patch("/:id", auth(UserRole.admin), UserController.updateSingleUser);
+
+router.delete("/:id", auth(UserRole.admin), UserController.softDeleteUser);
+router.patch("/block/:id", auth(UserRole.admin), UserController.blockedUser);
+router.patch(
+  "/unblock/:id",
+  auth(UserRole.admin),
+  UserController.unblockedUser
+);
+
 export const UserRouter = router;

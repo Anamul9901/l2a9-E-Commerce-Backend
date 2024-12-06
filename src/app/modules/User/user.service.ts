@@ -122,10 +122,170 @@ const updateSingleUser = async (id: string, payload: any) => {
   return result;
 };
 
+const softDeleteUser = async (id: string) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+
+  const result = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      status: UserStatus.deleted,
+    },
+  });
+
+  if (userData.role == "vendor") {
+    try {
+      const shopData = await prisma.shop.findUnique({
+        where: {
+          userId: id,
+        },
+      });
+      if (shopData?.id) {
+        const deleteAllProduct = await prisma.product.updateMany({
+          where: {
+            shopId: shopData?.id,
+          },
+          data: {
+            isDeleted: true,
+          },
+        });
+      }
+      const deleteOrder = await prisma.followUnfollow.deleteMany({
+        where: {
+          shopId: shopData?.id,
+        },
+      });
+      const deleteOrderProduct = await prisma.cartItem.deleteMany({
+        where: {
+          userEmail: userData?.email,
+        },
+      });
+      const deleteShop = await prisma.shop.delete({
+        where: {
+          id: shopData?.id,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  return result;
+};
+
+const blockedUser = async (id: string) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+
+  const result = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      status: UserStatus.blocked,
+    },
+  });
+
+  if (userData.role == "vendor") {
+    try {
+      const shopData = await prisma.shop.findUnique({
+        where: {
+          userId: id,
+        },
+      });
+      if (shopData?.id) {
+        const deleteAllProduct = await prisma.product.updateMany({
+          where: {
+            shopId: shopData?.id,
+          },
+          data: {
+            isDeleted: true,
+          },
+        });
+      }
+      const deleteOrderProduct = await prisma.cartItem.deleteMany({
+        where: {
+          userEmail: userData?.email,
+        },
+      });
+      const deleteShop = await prisma.shop.update({
+        where: {
+          id: shopData?.id,
+        },
+        data: {
+          isDeleted: true,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  return result;
+};
+
+const unblockedUser = async (id: string) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+
+  const result = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      status: UserStatus.active,
+    },
+  });
+
+
+  if (userData.role == "vendor") {
+    try {
+      const shopData = await prisma.shop.findUnique({
+        where: {
+          userId: id,
+        },
+      });
+      if (shopData?.id) {
+        const deleteAllProduct = await prisma.product.updateMany({
+          where: {
+            shopId: shopData?.id,
+          },
+          data: {
+            isDeleted: false,
+          },
+        });
+      }
+      const deleteShop = await prisma.shop.update({
+        where: {
+          id: shopData?.id,
+        },
+        data: {
+          isDeleted: false,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  return result;
+};
+
 export const UserService = {
   createUser,
   createAdmin,
   getAllUsers,
   getSingleUser,
   updateSingleUser,
+  softDeleteUser,
+  blockedUser,
+  unblockedUser
 };

@@ -61,10 +61,49 @@ const updateSingleUser = catchAsync(async (req, res) => {
   });
 });
 
+const softDeleteUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await UserService.softDeleteUser(id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "user delete successfully",
+    data: result,
+  });
+});
+
+const blockedUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await UserService.blockedUser(id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "user blocked successfully",
+    data: result,
+  });
+});
+
+const unblockedUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await UserService.unblockedUser(id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "user unblock successfully",
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   createAdmin,
   getAllUsers,
   getSingleUser,
   updateSingleUser,
+  softDeleteUser,
+  blockedUser,
+  unblockedUser
 };

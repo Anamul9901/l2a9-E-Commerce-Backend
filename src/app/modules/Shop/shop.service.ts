@@ -92,10 +92,38 @@ const deleteShop = async (id: string) => {
   return result;
 };
 
+const updateShop = async (user: any, payload: any) => {
+  const vendorData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user.email,
+      status: UserStatus.active,
+    },
+  });
+
+  const shopInfo = await prisma.shop.findUniqueOrThrow({
+    where: {
+      userId: vendorData.id,
+      isDeleted: false,
+    },
+  });
+
+  const result = await prisma.shop.update({
+    where: {
+      id: shopInfo.id,
+    },
+    data: {
+      ...payload,
+    },
+  });
+  return result;
+
+};
+
 export const ShopService = {
   createShop,
   getAllShop,
   getById,
   softDelete,
   deleteShop,
+  updateShop,
 };

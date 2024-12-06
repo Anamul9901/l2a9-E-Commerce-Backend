@@ -15,4 +15,5 @@ router.get(
   UserController.getSingleUser
 );
 
+router.patch("/:id", auth(UserRole.admin), UserController.updateSingleUser);
 export const UserRouter = router;

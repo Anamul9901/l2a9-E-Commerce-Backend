@@ -3,7 +3,6 @@ import sendResponse from "../../../shared/sendResponse";
 import { UserService } from "./user.service";
 import { StatusCodes } from "http-status-codes";
 
-
 const createUser = catchAsync(async (req, res) => {
   const result = await UserService.createUser(req.body);
 
@@ -38,7 +37,7 @@ const getAllUsers = catchAsync(async (req, res) => {
 });
 
 const getSingleUser = catchAsync(async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   const user = (req as any).user;
   const result = await UserService.getSingleUser(user);
 
@@ -50,10 +49,22 @@ const getSingleUser = catchAsync(async (req, res) => {
   });
 });
 
+const updateSingleUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await UserService.updateSingleUser(id, req.body);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "user update successfully",
+    data: result,
+  });
+});
 
 export const UserController = {
-    createUser,
-    createAdmin,
-    getAllUsers,
-    getSingleUser,
-}
+  createUser,
+  createAdmin,
+  getAllUsers,
+  getSingleUser,
+  updateSingleUser,
+};

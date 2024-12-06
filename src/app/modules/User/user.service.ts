@@ -28,7 +28,7 @@ const createUser = async (payload: any) => {
     configs.jwt.refresh_token_secret as Secret,
     configs.jwt.refresh_token_expires_in as string
   );
-  return {result, accessToken, refreshToken};
+  return { result, accessToken, refreshToken };
 };
 
 const createAdmin = async (payload: any) => {
@@ -45,6 +45,9 @@ const createAdmin = async (payload: any) => {
 
 const getAllUsers = async () => {
   const result = await prisma.user.findMany({
+    where: {
+      status: { notIn: [UserStatus.deleted] },
+    },
     select: {
       id: true,
       name: true,
@@ -53,6 +56,10 @@ const getAllUsers = async () => {
       contactNumber: true,
       address: true,
       profilePhoto: true,
+      status: true,
+    },
+    orderBy: {
+      cretedAt: "desc",
     },
   });
 
@@ -60,7 +67,6 @@ const getAllUsers = async () => {
 };
 
 const getSingleUser = async (user: any) => {
-  
   const result = await prisma.user.findUniqueOrThrow({
     where: {
       email: user.email,
@@ -74,9 +80,44 @@ const getSingleUser = async (user: any) => {
       contactNumber: true,
       address: true,
       profilePhoto: true,
+      status: true,
       shop: true,
     },
   });
+
+  return result;
+};
+
+const updateSingleUser = async (id: string, payload: any) => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+  const result = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: payload,
+  });
+
+  if (result.role == "vendor" && result.status == "deleted") {
+    const findShop = await prisma.shop.findUnique({
+      where: {
+        userId: id,
+      },
+    });
+    if (findShop) {
+      const res = await prisma.shop.update({
+        where: {
+          userId: id,
+        },
+        data: {
+          isDeleted: true,
+        },
+      });
+    }
+  }
 
   return result;
 };
@@ -86,4 +127,5 @@ export const UserService = {
   createAdmin,
   getAllUsers,
   getSingleUser,
+  updateSingleUser,
 };

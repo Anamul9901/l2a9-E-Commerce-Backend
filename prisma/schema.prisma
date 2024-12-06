@@ -141,6 +141,12 @@ model coupon {
   discount   Int
 }
 
+model category {
+  id    String @id @default(uuid())
+  key   String
+  label String
+}
+
 enum UserRole {
   customer
   vendor

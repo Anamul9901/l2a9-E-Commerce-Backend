@@ -31,12 +31,18 @@ const createOrder = (user, orderData) => __awaiter(void 0, void 0, void 0, funct
             cartItem: true,
         },
     });
-    const result = yield prisma_1.default.coupon.findUnique({
-        where: {
-            couponCode,
-            vendorId: cartInfo.vendorId,
-        },
-    });
+    let result;
+    try {
+        result = yield prisma_1.default.coupon.findUnique({
+            where: {
+                couponCode,
+                vendorId: cartInfo.vendorId,
+            },
+        });
+    }
+    catch (err) {
+        console.log(err);
+    }
     let totalSum = cartInfo === null || cartInfo === void 0 ? void 0 : cartInfo.cartItem.reduce((sum, item) => sum + item.totalPrice, 0);
     if (result) {
         const discountPercent = result === null || result === void 0 ? void 0 : result.discount;

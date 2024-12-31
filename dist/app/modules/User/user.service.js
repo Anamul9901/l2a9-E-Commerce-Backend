@@ -112,10 +112,163 @@ const updateSingleUser = (id, payload) => __awaiter(void 0, void 0, void 0, func
     }
     return result;
 });
+const softDeleteUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id,
+        },
+    });
+    const result = yield prisma_1.default.user.update({
+        where: {
+            id,
+        },
+        data: {
+            status: client_1.UserStatus.deleted,
+        },
+    });
+    if (userData.role == "vendor") {
+        try {
+            const shopData = yield prisma_1.default.shop.findUnique({
+                where: {
+                    userId: id,
+                },
+            });
+            if (shopData === null || shopData === void 0 ? void 0 : shopData.id) {
+                const deleteAllProduct = yield prisma_1.default.product.updateMany({
+                    where: {
+                        shopId: shopData === null || shopData === void 0 ? void 0 : shopData.id,
+                    },
+                    data: {
+                        isDeleted: true,
+                    },
+                });
+            }
+            const deleteOrder = yield prisma_1.default.followUnfollow.deleteMany({
+                where: {
+                    shopId: shopData === null || shopData === void 0 ? void 0 : shopData.id,
+                },
+            });
+            const deleteOrderProduct = yield prisma_1.default.cartItem.deleteMany({
+                where: {
+                    userEmail: userData === null || userData === void 0 ? void 0 : userData.email,
+                },
+            });
+            const deleteShop = yield prisma_1.default.shop.delete({
+                where: {
+                    id: shopData === null || shopData === void 0 ? void 0 : shopData.id,
+                },
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+    return result;
+});
+const blockedUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id,
+        },
+    });
+    const result = yield prisma_1.default.user.update({
+        where: {
+            id,
+        },
+        data: {
+            status: client_1.UserStatus.blocked,
+        },
+    });
+    if (userData.role == "vendor") {
+        try {
+            const shopData = yield prisma_1.default.shop.findUnique({
+                where: {
+                    userId: id,
+                },
+            });
+            if (shopData === null || shopData === void 0 ? void 0 : shopData.id) {
+                const deleteAllProduct = yield prisma_1.default.product.updateMany({
+                    where: {
+                        shopId: shopData === null || shopData === void 0 ? void 0 : shopData.id,
+                    },
+                    data: {
+                        isDeleted: true,
+                    },
+                });
+            }
+            const deleteOrderProduct = yield prisma_1.default.cartItem.deleteMany({
+                where: {
+                    userEmail: userData === null || userData === void 0 ? void 0 : userData.email,
+                },
+            });
+            const deleteShop = yield prisma_1.default.shop.update({
+                where: {
+                    id: shopData === null || shopData === void 0 ? void 0 : shopData.id,
+                },
+                data: {
+                    isDeleted: true,
+                },
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+    return result;
+});
+const unblockedUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id,
+        },
+    });
+    const result = yield prisma_1.default.user.update({
+        where: {
+            id,
+        },
+        data: {
+            status: client_1.UserStatus.active,
+        },
+    });
+    if (userData.role == "vendor") {
+        try {
+            const shopData = yield prisma_1.default.shop.findUnique({
+                where: {
+                    userId: id,
+                },
+            });
+            if (shopData === null || shopData === void 0 ? void 0 : shopData.id) {
+                const deleteAllProduct = yield prisma_1.default.product.updateMany({
+                    where: {
+                        shopId: shopData === null || shopData === void 0 ? void 0 : shopData.id,
+                    },
+                    data: {
+                        isDeleted: false,
+                    },
+                });
+            }
+            const deleteShop = yield prisma_1.default.shop.update({
+                where: {
+                    id: shopData === null || shopData === void 0 ? void 0 : shopData.id,
+                },
+                data: {
+                    isDeleted: false,
+                },
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+    return result;
+});
 exports.UserService = {
     createUser,
     createAdmin,
     getAllUsers,
     getSingleUser,
     updateSingleUser,
+    softDeleteUser,
+    blockedUser,
+    unblockedUser
 };

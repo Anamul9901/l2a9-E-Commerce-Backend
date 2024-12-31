@@ -20,13 +20,17 @@ const createOrder = async (user: any, orderData: any) => {
     },
   });
 
-  const result = await prisma.coupon.findUnique({
-    where: {
-      couponCode,
-      vendorId: cartInfo.vendorId,
-    },
-  });
-
+  let result;
+  try {
+    result = await prisma.coupon.findUnique({
+      where: {
+        couponCode,
+        vendorId: cartInfo.vendorId,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
   let totalSum = cartInfo?.cartItem.reduce(
     (sum, item) => sum + item.totalPrice,
     0
@@ -90,7 +94,6 @@ const getOrderForVendor = async (user: any) => {
       email: user.email,
     },
   });
-
 
   const orders = await prisma.order.findMany();
   const result = orders.filter((order) => {

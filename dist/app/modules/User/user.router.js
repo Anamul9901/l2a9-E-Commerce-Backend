@@ -14,4 +14,7 @@ router.post("/create-admin", (0, auth_1.default)(client_1.UserRole.admin), user_
 router.get("/", (0, auth_1.default)(client_1.UserRole.admin), user_controller_1.UserController.getAllUsers);
 router.get("/me", (0, auth_1.default)(client_1.UserRole.vendor, client_1.UserRole.admin, client_1.UserRole.customer), user_controller_1.UserController.getSingleUser);
 router.patch("/:id", (0, auth_1.default)(client_1.UserRole.admin), user_controller_1.UserController.updateSingleUser);
+router.delete("/:id", (0, auth_1.default)(client_1.UserRole.admin), user_controller_1.UserController.softDeleteUser);
+router.patch("/block/:id", (0, auth_1.default)(client_1.UserRole.admin), user_controller_1.UserController.blockedUser);
+router.patch("/unblock/:id", (0, auth_1.default)(client_1.UserRole.admin), user_controller_1.UserController.unblockedUser);
 exports.UserRouter = router;

@@ -65,10 +65,43 @@ const updateSingleUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 
         data: result,
     });
 }));
+const softDeleteUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield user_service_1.UserService.softDeleteUser(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        success: true,
+        message: "user delete successfully",
+        data: result,
+    });
+}));
+const blockedUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield user_service_1.UserService.blockedUser(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        success: true,
+        message: "user blocked successfully",
+        data: result,
+    });
+}));
+const unblockedUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield user_service_1.UserService.unblockedUser(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        success: true,
+        message: "user unblock successfully",
+        data: result,
+    });
+}));
 exports.UserController = {
     createUser,
     createAdmin,
     getAllUsers,
     getSingleUser,
     updateSingleUser,
+    softDeleteUser,
+    blockedUser,
+    unblockedUser
 };

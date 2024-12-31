@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post("/", auth(UserRole.vendor), ShopController.createShop);
 
-router.get("/", auth(UserRole.admin), ShopController.getAllShop);
+router.get("/", ShopController.getAllShop);
 
 router.get("/:id", ShopController.getById);
 

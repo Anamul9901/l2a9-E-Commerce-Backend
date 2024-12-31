@@ -27,9 +27,24 @@ const getVendorCoupon = catchAsync(async (req, res) => {
   });
 });
 
+const getAllCoupon = catchAsync(async (req, res) => {
+  const user = (req as any).user;
+  const result = await CouponService.getAllCoupon(user as any);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Coupon fetch successfully",
+    data: result,
+  });
+});
+
 const getSingleCoupon = catchAsync(async (req, res) => {
   const { couponCode } = req.params;
-  const result = await CouponService.getSingleCoupon(couponCode as string, req.body as any);
+  const result = await CouponService.getSingleCoupon(
+    couponCode as string,
+    req.body as any
+  );
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -42,7 +57,11 @@ const getSingleCoupon = catchAsync(async (req, res) => {
 const deleteCoupon = catchAsync(async (req, res) => {
   const { id } = req.params;
   const user = (req as any).user;
-  const result = await CouponService.deleteCoupon(user as any, id as string);
+  const result = await CouponService.deleteCoupon(
+    user as any,
+    id as string,
+    req.body as any
+  );
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -55,6 +74,7 @@ const deleteCoupon = catchAsync(async (req, res) => {
 export const CouponController = {
   createCoupon,
   getVendorCoupon,
+  getAllCoupon,
   getSingleCoupon,
   deleteCoupon,
 };

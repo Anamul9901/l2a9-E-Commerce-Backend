@@ -7,7 +7,9 @@ const router = express.Router();
 
 router.post("/", auth(UserRole.vendor), CouponController.createCoupon);
 
-router.get("/", auth(UserRole.vendor), CouponController.getVendorCoupon);
+router.get("/", auth(UserRole.vendor, UserRole.admin), CouponController.getVendorCoupon);
+
+router.get("/all", auth(UserRole.admin), CouponController.getVendorCoupon);
 
 router.post(
   "/:couponCode",
@@ -15,6 +17,10 @@ router.post(
   CouponController.getSingleCoupon
 );
 
-router.delete("/:id", auth(UserRole.vendor), CouponController.deleteCoupon);
+router.delete(
+  "/:id",
+  auth(UserRole.vendor, UserRole.admin),
+  CouponController.deleteCoupon
+);
 
 export const CouponRouter = router;

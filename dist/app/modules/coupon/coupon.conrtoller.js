@@ -37,6 +37,16 @@ const getVendorCoupon = (0, catchAsync_1.default)((req, res) => __awaiter(void 0
         data: result,
     });
 }));
+const getAllCoupon = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const result = yield coupon_service_1.CouponService.getAllCoupon(user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_codes_1.StatusCodes.OK,
+        success: true,
+        message: "Coupon fetch successfully",
+        data: result,
+    });
+}));
 const getSingleCoupon = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { couponCode } = req.params;
     const result = yield coupon_service_1.CouponService.getSingleCoupon(couponCode, req.body);
@@ -50,7 +60,7 @@ const getSingleCoupon = (0, catchAsync_1.default)((req, res) => __awaiter(void 0
 const deleteCoupon = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const user = req.user;
-    const result = yield coupon_service_1.CouponService.deleteCoupon(user, id);
+    const result = yield coupon_service_1.CouponService.deleteCoupon(user, id, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_codes_1.StatusCodes.OK,
         success: true,
@@ -61,6 +71,7 @@ const deleteCoupon = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
 exports.CouponController = {
     createCoupon,
     getVendorCoupon,
+    getAllCoupon,
     getSingleCoupon,
     deleteCoupon,
 };

@@ -38,11 +38,28 @@ const getVendorCoupon = (user) => __awaiter(void 0, void 0, void 0, function* ()
             status: client_1.UserStatus.active,
         },
     });
-    const result = yield prisma_1.default.coupon.findMany({
-        where: {
+    let where;
+    if (userData.role == "admin") {
+        where = {};
+    }
+    if (userData.role == "vendor") {
+        where = {
             vendorId: userData.id,
+        };
+    }
+    const result = yield prisma_1.default.coupon.findMany({
+        where: where,
+    });
+    return result;
+});
+const getAllCoupon = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: user.email,
+            status: client_1.UserStatus.active,
         },
     });
+    const result = yield prisma_1.default.coupon.findMany({});
     return result;
 });
 const getSingleCoupon = (couponCode, payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -54,7 +71,7 @@ const getSingleCoupon = (couponCode, payload) => __awaiter(void 0, void 0, void 
     });
     return result;
 });
-const deleteCoupon = (usre, id) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteCoupon = (usre, id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: usre.email,
@@ -64,7 +81,7 @@ const deleteCoupon = (usre, id) => __awaiter(void 0, void 0, void 0, function* (
     const result = yield prisma_1.default.coupon.delete({
         where: {
             id,
-            vendorId: userData.id,
+            vendorId: payload.vendorId || userData.id,
         },
     });
     return result;
@@ -72,6 +89,7 @@ const deleteCoupon = (usre, id) => __awaiter(void 0, void 0, void 0, function* (
 exports.CouponService = {
     createCoupon,
     getVendorCoupon,
+    getAllCoupon,
     getSingleCoupon,
     deleteCoupon,
 };

@@ -10,7 +10,7 @@ const auth_1 = __importDefault(require("../../middlewares/auth"));
 const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
 router.post("/", (0, auth_1.default)(client_1.UserRole.vendor), shop_contoller_1.ShopController.createShop);
-router.get("/", (0, auth_1.default)(client_1.UserRole.admin), shop_contoller_1.ShopController.getAllShop);
+router.get("/", shop_contoller_1.ShopController.getAllShop);
 router.get("/:id", shop_contoller_1.ShopController.getById);
 router.delete("/soft/:id", (0, auth_1.default)(client_1.UserRole.admin, client_1.UserRole.vendor), shop_contoller_1.ShopController.softDelete);
 router.delete("/:id", (0, auth_1.default)(client_1.UserRole.admin), shop_contoller_1.ShopController.deleteShop);
